@@ -59,12 +59,12 @@
   <!-- (opcjonalnie) Nexus – podmień hosta na swój -->
   <distributionManagement>
     <repository>
-      <id>nexus-releases</id>
-      <url>http://ci-server:8081/repository/maven-releases/</url>
+      <id>maven_release</id>
+      <url>http://192.168.1.101:8081/repository/maven_release/</url>
     </repository>
     <snapshotRepository>
-      <id>nexus-snapshots</id>
-      <url>http://ci-server:8081/repository/maven-snapshots/</url>
+      <id>maven_snapshot</id>
+      <url>http://192.168.1.101:8081/repository/maven_snapshot/</url>
     </snapshotRepository>
   </distributionManagement>
 </project>
