@@ -45,15 +45,14 @@
     </plugins>
   </build>
 
-  <!-- (opcjonalnie) Nexus – podmień hosta na swój -->
   <distributionManagement>
     <repository>
-      <id>nexus-releases</id>
-      <url>http://ci-server:8081/repository/maven-releases/</url>
+      <id>maven_release_tomcat</id>
+      <url>http://192.168.1.101:8081/repository/maven_release_tomcat/</url>
     </repository>
     <snapshotRepository>
-      <id>nexus-snapshots</id>
-      <url>http://ci-server:8081/repository/maven-snapshots/</url>
+      <id>maven_snapshot_tomcat</id>
+      <url>http://192.168.1.101:8081/repository/maven_snapshot_tomcat/</url>
     </snapshotRepository>
   </distributionManagement>
 </project>

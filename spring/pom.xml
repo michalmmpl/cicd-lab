@@ -6,7 +6,7 @@
 
   <groupId>pl.lab</groupId>
   <artifactId>spring-demo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>spring-demo</name>
 
   <properties>
@@ -56,15 +56,14 @@
     </plugins>
   </build>
 
-  <!-- (opcjonalnie) Nexus – podmień hosta na swój -->
   <distributionManagement>
     <repository>
-      <id>maven_release</id>
-      <url>http://192.168.1.101:8081/repository/maven_release/</url>
+      <id>maven_release_spring</id>
+      <url>http://192.168.1.101:8081/repository/maven_release_spring/</url>
     </repository>
     <snapshotRepository>
-      <id>maven_snapshot</id>
-      <url>http://192.168.1.101:8081/repository/maven_snapshot/</url>
+      <id>maven_snapshot_spring</id>
+      <url>http://192.168.1.101:8081/repository/maven_snapshot_spring/</url>
     </snapshotRepository>
   </distributionManagement>
 </project>
