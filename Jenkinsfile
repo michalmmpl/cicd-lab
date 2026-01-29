@@ -11,8 +11,6 @@ pipeline {
         dir('spring') {
           sh """
             ls -la
-            echo '--- SPRING: set version to 0.0.1-SNAPSHOT ---'
-            mvn versions:set -DnewVersion=0.0.1-SNAPSHOT -DgenerateBackupPoms=false
 
             echo '--- SPRING: mvn clean package ---'
             mvn clean package
