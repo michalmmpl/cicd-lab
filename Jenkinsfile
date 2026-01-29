@@ -19,6 +19,9 @@ pipeline {
 
             echo '--- SPRING: mvn test ---'
             mvn test
+
+	    echo '--- SPRING mvn deploy ---'
+            mvn deploy -DskipTests
           """
         }
       }
