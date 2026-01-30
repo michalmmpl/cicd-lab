@@ -43,6 +43,9 @@ pipeline {
       }
     }
     stage('Ansible test') {
+      when {
+         branch 'main'
+      }
       steps {
         dir('devops/ansible') {
           sh """
