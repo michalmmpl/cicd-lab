@@ -29,6 +29,15 @@ pipeline {
         dir('tomcat') {
           sh """
           ls -la
+
+            echo '--- TOMCAT: mvn clean package ---'
+            mvn clean package
+
+            echo '--- TOMCAT: mvn test ---'
+            mvn test
+
+	    echo '--- TOMCAT: mvn deploy ---'
+            mvn deploy -DskipTests
           """
         }
       }
