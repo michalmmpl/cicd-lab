@@ -1,0 +1,7 @@
+spring_app_name: spring-sample
+spring_app_user: spring
+spring_app_group: spring
+spring_app_dir: /opt/spring-apps/spring-sample
+spring_app_jar: spring-sample-1.0.0.jar
+spring_app_port: 8081
+java_opts: "-Xms256m -Xmx512m"

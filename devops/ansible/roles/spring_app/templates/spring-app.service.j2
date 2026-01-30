@@ -1,0 +1,18 @@
+[Unit]
+Description=Spring Boot - {{ spring_app_name }}
+After=network.target
+
+[Service]
+User={{ spring_app_user }}
+Group={{ spring_app_group }}
+WorkingDirectory={{ spring_app_dir }}
+Environment="JAVA_HOME={{ java_home }}"
+Environment="PATH={{ java_home }}/bin:/usr/bin:/bin"
+Environment="JAVA_OPTS={{ java_opts }}"
+ExecStart=/usr/bin/java -jar {{ spring_app_dir }}/{{ spring_app_jar }} --server.port={{ spring_app_port }}
+Environment="JAVA_OPTS={{ java_opts }}"
+Restart=always
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,56 @@
+# devops/ansible/roles/deploy_from_nexus/tasks/main.yml
+---
+# SPRING (RELEASE) -> pobranie i restart
+- name: Wylicz GAV path (Spring RELEASE)
+  ansible.builtin.set_fact:
+    spring_path: "{{ spring_group_id | replace('.', '/') }}/{{ spring_artifact_id }}/{{ spring_version }}/{{ spring_artifact_id }}-{{ spring_version }}.{{ spring_packaging }}"
+
+- name: Pobierz JAR z Nexusa (Spring RELEASE)
+  ansible.builtin.get_url:
+    url: "{{ nexus_base_url }}/repository/{{ nexus_repo_release_spring }}/{{ spring_path }}"
+    dest: "{{ spring_app_dir }}/{{ spring_app_jar }}"   # zapisujemy jako stała nazwa
+    url_username: "{{ nexus_username | default(omit) }}"
+    url_password: "{{ nexus_password | default(omit) }}"
+    mode: '0644'
+    force: yes
+  when: spring_app_dir is defined
+  become: true
+
+- name: Ustaw właścicieli na pliku JAR
+  ansible.builtin.file:
+    path: "{{ spring_app_dir }}/{{ spring_app_jar }}"
+    owner: "{{ spring_app_user }}"
+    group: "{{ spring_app_group }}"
+    mode: '0644'
+  when: spring_app_dir is defined
+  become: true
+
+- name: Restart usługi Spring
+  ansible.builtin.systemd:
+    name: "{{ spring_app_name }}"
+    state: restarted
+    enabled: yes
+  when: spring_app_name is defined
+  become: true
+
+# TOMCAT (RELEASE) -> pobranie do webapps i restart
+- name: Wylicz GAV path (Tomcat RELEASE)
+  ansible.builtin.set_fact:
+    tomcat_path: "{{ tomcat_group_id | replace('.', '/') }}/{{ tomcat_artifact_id }}/{{ tomcat_version_art }}/{{ tomcat_artifact_id }}-{{ tomcat_version_art }}.{{ tomcat_packaging }}"
+
+- name: Pobierz WAR z Nexusa (Tomcat RELEASE)
+  ansible.builtin.get_url:
+    url: "{{ nexus_base_url }}/repository/{{ nexus_repo_release_tomcat }}/{{ tomcat_path }}"
+    dest: "{{ tomcat_install_dir }}/webapps/{{ tomcat_app_context }}.war"
+    url_username: "{{ nexus_username | default(omit) }}"
+    url_password: "{{ nexus_password | default(omit) }}"
+    mode: '0644'
+    force: yes
+  become: true
+
+- name: Restart Tomcat
+  ansible.builtin.systemd:
+    name: "{{ tomcat_service_name }}"
+    state: restarted
+    enabled: yes
+  become: true

@@ -1,0 +1,10 @@
+- name: Upewnij się, że cache pakietów jest aktualny
+  ansible.builtin.dnf:
+    update_cache: yes
+  become: true
+
+- name: Zainstaluj OpenJDK
+  ansible.builtin.dnf:
+    name: "{{ java_package }}"
+    state: present
+  become: true

@@ -1,0 +1,18 @@
+# Zakładamy, że używamy konta w Nexus (Vault!)
+nexus_username: "admin"
+nexus_password: "admin"
+
+# Koordynaty artefaktów (domyślnie spójne z group_vars)
+spring_group_id: com.example
+spring_artifact_id: spring-sample
+spring_version: "1.0.0"
+spring_packaging: jar
+
+tomcat_group_id: com.example
+tomcat_artifact_id: sample
+tomcat_version_art: "1.0.0"
+tomcat_packaging: war
+
+nexus_repo_release: maven_release
+nexus_repo_snapshot: maven_snapshot
+nexus_base_url: "http://192.168.1.101:8081"   # nadpisywane w group_vars

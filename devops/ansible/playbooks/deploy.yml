@@ -1,0 +1,9 @@
+# devops/ansible/playbooks/deploy.yml
+---
+- name: Deploy aplikacji (Spring + Tomcat)
+  hosts: test:prod   # dla prod uruchomisz z -l prod albo zrobisz drugi play
+  become: true
+  vars_files:
+    - ../inventory/group_vars/all.vault.yml   # jeśli używasz Vault
+  roles:
+    - role: deploy_from_nexus

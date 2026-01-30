@@ -1,0 +1,37 @@
+- name: Utwórz grupę
+  ansible.builtin.group:
+    name: "{{ spring_app_group }}"
+    state: present
+  become: true
+
+- name: Utwórz użytkownika
+  ansible.builtin.user:
+    name: "{{ spring_app_user }}"
+    group: "{{ spring_app_group }}"
+    shell: /sbin/nologin
+    system: yes
+    create_home: no
+  become: true
+
+- name: Utwórz katalog aplikacji
+  ansible.builtin.file:
+    path: "{{ spring_app_dir }}"
+    state: directory
+    owner: "{{ spring_app_user }}"
+    group: "{{ spring_app_group }}"
+    mode: '0755'
+  become: true
+
+- name: Unit systemd dla aplikacji Spring
+  ansible.builtin.template:
+    src: "spring-app.service.j2"
+    dest: "/etc/systemd/system/{{ spring_app_name }}.service"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Przeładuj systemd (na razie bez startu)
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  become: true

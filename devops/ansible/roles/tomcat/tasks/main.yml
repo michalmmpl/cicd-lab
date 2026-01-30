@@ -1,0 +1,116 @@
+
+- name: Ustal JAVA_HOME (dynamicznie z /usr/bin/java)
+  ansible.builtin.shell: "dirname $(dirname $(readlink -f $(which java)))"
+  register: java_home_cmd
+  changed_when: false
+
+- name: Ustaw fakt JAVA_HOME
+  ansible.builtin.set_fact:
+    java_home: "{{ java_home_cmd.stdout }}"
+
+- name: Utwórz grupę Tomcat (jeżeli nie istnieje)
+  ansible.builtin.group:
+    name: "{{ tomcat_group }}"
+    state: present
+  become: true
+
+- name: Utwórz użytkownika Tomcat
+  ansible.builtin.user:
+    name: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    shell: /sbin/nologin
+    system: yes
+    create_home: no
+  become: true
+
+- name: Pobierz binarkę Tomcat
+  ansible.builtin.get_url:
+    url: "https://dlcdn.apache.org/tomcat/tomcat-10/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    mode: '0644'
+  become: true
+
+- name: Utwórz katalog instalacyjny
+  ansible.builtin.file:
+    path: "{{ tomcat_install_dir }}"
+    state: directory
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: '0755'
+  become: true
+
+- name: Rozpakuj Tomcat
+  ansible.builtin.unarchive:
+    src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "{{ tomcat_install_dir }}"
+    remote_src: yes
+    extra_opts: [ "--strip-components=1" ]
+  become: true
+
+- name: Wdróż kontekst Managera z dopuszczeniem sieci
+  ansible.builtin.template:
+    src: "manager-context.xml.j2"
+    dest: "{{ tomcat_install_dir }}/webapps/manager/META-INF/context.xml"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: '0644'
+  notify: Restart Tomcat
+  become: true
+
+- name: Wdróż tomcat-users.xml
+  ansible.builtin.template:
+    src: "tomcat-users.xml.j2"
+    dest: "{{ tomcat_install_dir }}/conf/tomcat-users.xml"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: '0640'
+  notify: Restart Tomcat
+  become: true
+
+- name: Ustaw właścicieli
+  ansible.builtin.file:
+    path: "{{ tomcat_install_dir }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    recurse: yes
+  become: true
+
+- name: Wdróż unit systemd dla Tomcat
+  ansible.builtin.template:
+    src: "tomcat.service.j2"
+    dest: "/etc/systemd/system/{{ tomcat_service_name }}.service"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+
+- name: Wdróż server.xml (port {{ tomcat_http_port }})
+  ansible.builtin.template:
+    src: "server.xml.j2"
+    dest: "{{ tomcat_install_dir }}/conf/server.xml"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: '0644'
+  notify: Restart Tomcat
+  become: true
+
+
+- name: Otwórz port {{ tomcat_http_port }}/tcp dla Tomcata (bez modułu)
+  ansible.builtin.command: >
+    firewall-cmd --zone=public --permanent --add-port={{ tomcat_http_port }}/tcp
+  become: true
+
+- name: Reload firewalld (bez modułu)
+  ansible.builtin.command: firewall-cmd --reload
+  become: true
+
+
+
+- name: Przeładuj systemd i uruchom Tomcat
+  ansible.builtin.systemd:
+    name: "{{ tomcat_service_name }}"
+    daemon_reload: yes
+    state: started
+    enabled: yes
+  become: true

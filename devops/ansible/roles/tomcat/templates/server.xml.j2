@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Server port="8005" shutdown="SHUTDOWN">
+
+  <!-- GLOBAL: informacja gdzie jest baza użytkowników -->
+  <GlobalNamingResources>
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+  </GlobalNamingResources>
+
+  <Service name="Catalina">
+    <Connector port="{{ tomcat_http_port }}"
+               protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443" />
+
+    <Engine name="Catalina" defaultHost="localhost">
+
+      <!-- REALM: dzięki temu Tomcat używa tomcat-users.xml -->
+      <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+               resourceName="UserDatabase"/>
+      </Realm>
+
+      <Host name="localhost" 
+            appBase="{{ tomcat_install_dir }}/webapps"
+            unpacks="true"
+            autoDeploy="true">
+      </Host>
+
+    </Engine>
+  </Service>
+</Server>

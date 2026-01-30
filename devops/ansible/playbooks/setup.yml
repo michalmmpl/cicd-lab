@@ -1,0 +1,11 @@
+# devops/ansible/playbooks/setup.yml
+---
+- name: Setup środowisk (Java, Tomcat, Spring service)
+  hosts: test:prod
+  become: true
+  vars_files:
+    - ../inventory/group_vars/all.vault.yml   # jeśli używasz Vault (opcjonalnie)
+  roles:
+    - role: java
+    - role: tomcat
+    - role: spring_app

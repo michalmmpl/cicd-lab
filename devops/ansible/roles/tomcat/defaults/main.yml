@@ -1,0 +1,5 @@
+tomcat_version: "10.1.52"
+tomcat_user: tomcat
+tomcat_group: tomcat
+tomcat_install_dir: /opt/tomcat
+tomcat_service_name: tomcat

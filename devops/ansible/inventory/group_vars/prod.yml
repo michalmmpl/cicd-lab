@@ -1,0 +1,41 @@
+# devops/ansible/inventory/group_vars/prod.yml
+env_name: prod
+
+# --- Java ---
+java_package: java-21-openjdk
+
+# --- Tomcat ---
+tomcat_version: "10.1.52"
+tomcat_user: tomcat
+tomcat_group: tomcat
+tomcat_install_dir: /opt/tomcat
+tomcat_service_name: tomcat
+tomcat_http_port: 8081               # PROD: Tomcat na 8081
+tomcat_manager_allow: "127\\..*|192\\.168\\.1\\..*"
+tomcat_manager_user: admin
+tomcat_manager_pass: admin
+
+
+# --- Spring ---
+spring_app_name: spring-sample
+spring_app_user: spring
+spring_app_group: spring
+spring_app_dir: /opt/spring-apps/spring-sample
+spring_app_jar: spring-demo.jar      # STAŁA nazwa
+spring_app_port: 8080                # PROD: Spring na 8080
+
+# --- Nexus ---
+nexus_base_url: "http://192.168.1.101:8081"
+nexus_repo_release_spring: "maven_release_spring"
+nexus_repo_release_tomcat: "maven_release_tomcat"
+
+# --- GAV RELEASE ---
+spring_group_id: pl.lab
+spring_artifact_id: spring-demo
+spring_version: "0.0.1"
+spring_packaging: jar
+
+tomcat_group_id: pl.lab
+tomcat_artifact_id: tomcat-demo
+tomcat_version_art: "0.0.1"
+tomcat_packaging: war

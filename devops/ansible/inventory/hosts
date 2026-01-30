@@ -1,0 +1,10 @@
+# devops/ansible/inventory/hosts
+[all]
+test-env ansible_host=192.168.1.102
+prod-env ansible_host=192.168.1.103
+
+[test]
+test-env
+
+[prod]
+prod-env
