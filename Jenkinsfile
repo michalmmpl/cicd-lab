@@ -42,5 +42,15 @@ pipeline {
         }
       }
     }
+    stage('Ansible test') {
+      steps {
+        dir('devops/ansible') {
+          sh """
+          ansible-playbook playbooks/setup.yml -l test
+          """
+        }
+      }
+    }
+
   }
 }
