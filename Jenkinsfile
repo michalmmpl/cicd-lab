@@ -47,6 +47,7 @@ pipeline {
         dir('devops/ansible') {
           sh """
           ansible-playbook playbooks/setup.yml -l test
+	  ansible-playbook playbooks/deploy.yml -l test
           """
         }
       }
