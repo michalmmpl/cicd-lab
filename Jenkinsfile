@@ -43,9 +43,11 @@ pipeline {
       }
     }
     stage('Ansible test') {
+
       when {
-         branch 'main'
+   	 expression { env.GIT_BRANCH == 'origin/main' || env.BRANCH_NAME == 'main' }
       }
+
       steps {
         dir('devops/ansible') {
           sh """

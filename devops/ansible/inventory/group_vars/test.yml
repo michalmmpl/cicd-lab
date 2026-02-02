@@ -28,7 +28,7 @@ nexus_base_url: "http://192.168.1.101:8081"
 nexus_repo_release_spring: "maven_release_spring"
 nexus_repo_release_tomcat: "maven_release_tomcat"
 
-# --- GAV RELEASE (zgodne z tym, co masz w Nexusie) ---
+# --- GAV RELEASE ---
 spring_group_id: pl.lab
 spring_artifact_id: spring-demo
 spring_version: "0.0.1"
