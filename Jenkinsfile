@@ -62,30 +62,32 @@ pipeline {
       when {
        expression { env.GIT_BRANCH == 'origin/main' || env.BRANCH_NAME == 'main' }
       }
-    steps {
-      script {
 
-        echo "Sprawdzanie załadowania aplikacji Spring"
-        sh '''
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://192.168.1.102:8080/hello)
-          if [ "$STATUS" -ne 200 ]; then
-            echo "ERROR: Spring endpoint zwrócił $STATUS, oczekiwano 200"
-            exit 1
-          fi
-          echo "Spring OK (200)"
-        '''
+  steps {
+    script {
 
-        echo ">>> Sprawdzam działanie aplikacji Tomcat (8081)..."
-        sh '''
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://192.168.1.102:8081/hello/hello)
-          if [ "$STATUS" -ne 200 ]; then
-            echo "ERROR: Tomcat endpoint zwrócił $STATUS, oczekiwano 200"
-            exit 1
-          fi
-          echo "Tomcat OK (200)"
-        '''
-        }
-      }
+      echo "Sprawdzanie Spring (8080)"
+      sh '''
+        STATUS=$(curl -4 --noproxy '*' -s -o /dev/null -w "%{http_code}" --connect-timeout 5 http://192.168.1.102:8080/hello)
+        if [ "$STATUS" -ne 200 ]; then
+          echo "ERROR: Spring endpoint zwrócił $STATUS"
+          exit 1
+        fi
+        echo "Spring OK (200)"
+      '''
+
+      echo "Sprawdzanie Tomcat (8081)"
+      sh '''
+        STATUS=$(curl -4 --noproxy '*' -s -o /dev/null -w "%{http_code}" --connect-timeout 5 http://192.168.1.102:8081/hello/hello)
+        if [ "$STATUS" -ne 200 ]; then
+          echo "ERROR: Tomcat endpoint zwrócił $STATUS"
+          exit 1
+        fi
+        echo "Tomcat OK (200)"
+      '''
     }
+  }
+}
+
   }
 }
